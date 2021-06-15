@@ -1,70 +1,104 @@
-# Getting Started with Create React App
+# Learning React Hooks
+Hooks não funcionam em classes, mas podem ser usados no lugar de classes.
+### hooks tem 2 regras 
+<ul>
+<li>Apenas chame hooks no nivel mais alto, não em loops ou funções aninhadas</li>
+<li>Apenas chame hooks de componentes funcionais, não chame hooks de funções javascript comuns</li>
+</ul>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## useState
+funciona como o state de uma classe do react.
+### usando useState
+<code>
 
-## Available Scripts
+    import {useState} from 'react';
 
-In the project directory, you can run:
+    function Example(){
 
-### `yarn start`
+        const [count, setCount] = useState(0);
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+        return (
+        <div className="App">
+        <div className="simpleHook">
+            <p>Você clicou {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+            Clique aqui
+            </button>
+        </div>
+        </div>
+    }
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+</code> 
 
-### `yarn test`
+## useEffect
+funciona como o <code>componentDidMount()</code>, <code>componentDidUpdate()</code> e <code>componentWillUnmount()</code> combinados.
+### usando useEffect
+<code>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    import {useState,  useEffect } from 'react';
 
-### `yarn build`
+    function Example(){
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+        const [count, setCount] = useState(0);
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+        useEffect(() => {
+        document.title = `You clicked ${count} times`;
+        });
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+        return (
+        <div className="App">
+        <div className="simpleHook">
+            <p>Você clicou {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+            Clique aqui
+            </button>
+        </div>
+        </div>
+    }
 
-### `yarn eject`
+</code> 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### extras do useEffect
+<li>Passar uma array vazia como abaixo, faz com que o useEffect rode apenas uma vez no mount</li>
+<code>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    useEffect(() => {
+    
+    },[]);
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+</code>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<li>Passar uma variavel no array faz com que o useEffect só rode quando a variavel mudar. No exemplo abaixo, o useEffect só vai executar quando <code>count</code> for atualizado</li>
 
-## Learn More
+<code>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    useEffect(() => {
+    document.title = `You clicked ${count} times`;
+    },[count]);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+</code>
 
-### Code Splitting
+## Hooks customizados
+para criar um hook customizado, crie uma função e retorne o valor do estado.
+<code>
+ 
+    function useCustomHook(param) {
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+        const [result, setResult] = useState(param);
 
-### Analyzing the Bundle Size
+        useEffect(() => {
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    function change() {
 
-### Making a Progressive Web App
+        const changed = `posso mudar o parametro de "${param}", para outra coisa dentro do useEffect customizado`
+        setResult(changed);
+        }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+        change();
+        });
 
-### Advanced Configuration
+        return [result, setResult];
+    }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+</code>
